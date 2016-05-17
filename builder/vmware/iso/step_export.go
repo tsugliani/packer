@@ -25,6 +25,7 @@ func (s *StepExport) generateArgs(c *Config, outputPath string, hidePassword boo
 	return []string{
 		"--noSSLVerify=true",
 		"--skipManifestCheck",
+		"--allowAllExtraConfig",
 		"-tt=" + s.Format,
 		"vi://" + c.RemoteUser + ":" + password + "@" + c.RemoteHost + "/" + c.VMName,
 		outputPath,
@@ -54,8 +55,8 @@ func (s *StepExport) Run(state multistep.StateBag) multistep.StepAction {
 	// Export the VM
 	outputPath := filepath.Join(c.VMName, c.VMName+"."+s.Format)
 
-	if s.Format == "ova" {
-		os.MkdirAll(outputPath, 0755)
+	if s.Format == "ova" || s.Format == "ovf" {
+		os.MkdirAll(c.VMName, 0755)
 	}
 
 	ui.Say("Exporting virtual machine...")
